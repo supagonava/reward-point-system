@@ -1,5 +1,14 @@
+import { defineNuxtConfig } from "nuxt/config";
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+    ssr: true,
+    typescript: {
+        tsConfig: {
+            extends: "./.nuxt/tsconfig.json",
+        },
+    },
+    plugins: ["~/plugins/vuex-plugin.ts"],
     css: ["~/assets/css/tailwind.css"],
     devtools: { enabled: true },
     postcss: {
@@ -8,4 +17,5 @@ export default defineNuxtConfig({
             autoprefixer: {},
         },
     },
+    compatibilityDate: "2024-10-24",
 });
