@@ -1,5 +1,6 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, Req, UseGuards, Get } from '@nestjs/common';
 import { AuthService } from './auth.service';
+import { JwtAuthGuard } from './jwt-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -15,5 +16,13 @@ export class AuthController {
       return { message: 'Invalid credentials' };
     }
     return this.authService.login(user);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('me')
+  async profile(@Req() req) {
+    const userProfile = { ...req.user };
+    const userPoint = this.authService.getUserPoints(userProfile.id);
+    return { ...userProfile, points: userPoint };
   }
 }
