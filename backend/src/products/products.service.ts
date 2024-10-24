@@ -16,7 +16,7 @@ const PRODUCTS = [
     name: 'Coffee Mug Mockup',
     description: 'Description 2',
     pointsRequired: 200,
-    expirationDate: '2024-11-30T23:59:59Z',
+    expirationDate: '2024-09-30T23:59:59Z',
     image:
       'https://blog-frontend.envato.com/cdn-cgi/image/width=1024,quality=75,format=auto/uploads/2021/05/Screen-Shot-2021-05-24-at-12.31.59-pm.png',
     redeemedBy: [],
@@ -40,7 +40,6 @@ export class ProductsService {
   CODE_ERROR_REDEEMED = 3;
 
   private products = [];
-  private redeemedProducts = {}; // เก็บข้อมูลการแลกสินค้าของผู้ใช้
 
   constructor() {
     this.products = [...PRODUCTS];
@@ -67,7 +66,7 @@ export class ProductsService {
     }
 
     // ตรวจสอบแต้มของผู้ใช้และสถานะการแลกสินค้า
-    if (product.isRedeemed || userPoints < product.pointsRequired) {
+    if (userPoints < product.pointsRequired) {
       return {
         code: this.CODE_ERROR_POINT_NOT_ENOUGHT,
         message: 'Cannot redeem product',
@@ -83,7 +82,6 @@ export class ProductsService {
     }
 
     // อัปเดตสถานะการแลกสินค้า
-    product.isRedeemed = true;
     product.redeemedBy.push(userId);
 
     return {
@@ -93,6 +91,8 @@ export class ProductsService {
   }
 
   getRedeemedProducts(userId: number) {
-    return this.redeemedProducts[userId] || [];
+    return this.products.filter((product) =>
+      product.redeemedBy.includes(userId),
+    );
   }
 }

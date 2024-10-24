@@ -8,19 +8,19 @@ export class AuthService {
     {
       id: 1,
       username: 'user1',
-      password: 'password1',
+      password: '$2b$10$aJwvuDxKnlKCQDBwQwgUy.Rf3Txz87ytwG2pJNwiIvaRTNjVjRVye',
       points: 1000,
     },
     {
       id: 2,
       username: 'user2',
-      password: 'password2',
+      password: '$2b$10$aJwvuDxKnlKCQDBwQwgUy.Rf3Txz87ytwG2pJNwiIvaRTNjVjRVye',
       points: 1000,
     },
     {
       id: 3,
       username: 'user3',
-      password: 'password3',
+      password: '$2b$10$aJwvuDxKnlKCQDBwQwgUy.Rf3Txz87ytwG2pJNwiIvaRTNjVjRVye',
       points: 1000,
     },
   ];

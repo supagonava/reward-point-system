@@ -1,4 +1,12 @@
-import { Controller, Get, UseGuards, Post, Param, Req } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  ParseIntPipe,
+  UseGuards,
+  Post,
+  Param,
+  Req,
+} from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { AuthService } from '../auth/auth.service';
@@ -17,9 +25,16 @@ export class ProductsController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Get('redeemed')
+  redeemedProducts(@Req() req) {
+    const userId = req.user.id;
+    return this.productsService.getRedeemedProducts(userId);
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Post('redeem/:id')
-  redeemProduct(@Param('id') id: number, @Req() req) {
-    const userId = req.user.sub; // ใช้ userId ที่ได้จาก JWT
+  redeemProduct(@Param('id', ParseIntPipe) id: number, @Req() req) {
+    const userId = req.user.id;
     const userPoints = this.authService.getUserPoints(userId); // ดึงแต้มของผู้ใช้
 
     const result = this.productsService.redeemProduct(userId, id, userPoints);

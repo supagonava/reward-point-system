@@ -13,7 +13,7 @@ import { ProductsModule } from './products/products.module';
     AuthModule,
     ProductsModule,
     JwtModule.register({
-      secret: 'your-secret-key', // คุณควรเก็บ secret key ไว้ใน environment variables
+      secret: process.env?.SECRET_KEY ?? '12345678',
       signOptions: { expiresIn: '8h' }, // กำหนดเวลาหมดอายุของ token
     }),
   ],
