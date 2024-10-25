@@ -22,12 +22,12 @@
 
 1. Clone โปรเจคนี้จาก GitHub:
    ```bash
-   git clone https://github.com/your-repo/point-system.git
+   git clone https://github.com/supagonava/reward-point-system
    ```
 
 2. เข้าไปในโฟลเดอร์โปรเจค:
    ```bash
-   cd point-system
+   cd reward-point-system
    ```
 
 3. สร้างและรัน Docker Container ด้วยคำสั่ง:
@@ -40,7 +40,7 @@
 ### การใช้งาน
 
 - เปิดเบราว์เซอร์แล้วเข้าไปที่: `http://localhost:3000` เพื่อเข้าสู่ระบบ Frontend
-- API Backend จะทำงานที่ `http://localhost:4000`
+- API Backend จะทำงานที่ `http://localhost:3001`
 
 ## โครงสร้างโปรเจค
 
@@ -60,20 +60,6 @@
 - คะแนนที่ต้องใช้ในการแลก
 - วันที่หมดอายุของสิทธิ์
 
-### การพัฒนาเพิ่มเติม
-
-สามารถแก้ไขหรือเพิ่มฟีเจอร์ต่าง ๆ ตามความต้องการได้ เช่น:
-- เชื่อมต่อกับฐานข้อมูลจริง
-- การพัฒนาหน้าจอเพิ่มเติม หรือฟังก์ชั่นใหม่
-
-### การตั้งค่าตัวแปรสภาพแวดล้อม (Environment Variables)
-
-#### Frontend
-- `NODE_ENV`: กำหนดค่าเป็น `production` เพื่อใช้งานในโหมด production
-
-#### Backend
-- `NODE_ENV`: กำหนดค่าเป็น `production` เพื่อใช้งานในโหมด production
-
 ## การใช้งาน Docker Compose
 
 หากต้องการหยุดการทำงานของ container:
@@ -89,7 +75,3 @@ docker-compose up --build frontend
 ```bash
 docker-compose up --build backend
 ```
-
----
-
-หากมีข้อสงสัยเพิ่มเติมสามารถติดต่อผู้พัฒนาได้ผ่านช่องทางต่าง ๆ ที่ระบุในเอกสารนี้
