@@ -37,13 +37,23 @@
 </template>
 
 <script setup lang="ts">
-definePageMeta({ middleware: ['auth'] })
-
 import BottomNavigation from '~/components/BottomNavigation.vue';
-import { computed, onMounted } from 'vue'
+import { computed, onBeforeMount, onMounted } from 'vue'
 import { useUserStore } from '../store/user'
 import { useProductsStore } from '~/store/product';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
+// check isAuthenticated
+onBeforeMount(async () => {
+    if (!userStore.isChecked) {
+        await userStore.checkAuth();
+    }
+
+    if (!userStore.isAuthenticated) {
+        router.push("/login");
+    }
+});
 
 const userStore = useUserStore()
 const productStore = useProductsStore()

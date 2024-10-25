@@ -36,22 +36,21 @@ export const useUserStore = defineStore("user", {
             Cookies.remove("token");
             navigateTo("login");
         },
-
-        // ตรวจสอบการล็อกอิน (เช็ค token)
         async checkAuth() {
             const token = Cookies.get("token");
             if (token) {
                 this.token = token;
-                // คุณสามารถทำการ validate token หรือดึงข้อมูลผู้ใช้เพิ่มเติมได้
                 try {
                     const { $axios } = useNuxtApp();
-                    const response = await $axios.get("/auth/me", { headers: { Authorization: "Bearer " + token } }); // เรียก API เพื่อดึงข้อมูลผู้ใช้
+                    const response = await $axios.get("/auth/me", { headers: { Authorization: "Bearer " + token } });
                     this.user = response.data;
                     this.isAuthenticated = true;
                 } catch (error) {
                     console.error("Error checking authentication:", error);
-                    this.logout(); // ถ้า token ใช้งานไม่ได้ให้ทำการ logout
+                    this.logout();
                 }
+            } else {
+                this.isAuthenticated = false;
             }
             this.isChecked = true;
         },

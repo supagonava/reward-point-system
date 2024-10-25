@@ -32,7 +32,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onBeforeMount } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useProductsStore } from '../../store/product'
 import { useUserStore } from '../../store/user'
@@ -71,6 +71,17 @@ const redeem = async () => {
         alert(error.message)
     }
 }
+
+// check isAuthenticated
+onBeforeMount(async () => {
+    if (!userStore.isChecked) {
+        await userStore.checkAuth();
+    }
+
+    if (!userStore.isAuthenticated) {
+        router.push("/login");
+    }
+});
 
 // โหลดข้อมูลเมื่อ component ถูก mount
 onMounted(() => {

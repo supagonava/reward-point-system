@@ -32,13 +32,11 @@
 
 <script setup lang="ts">
 import dayjs from 'dayjs';
-import { computed, onMounted } from 'vue'
+import { computed, onBeforeMount, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useProductsStore } from '../store/product'
 import BottomNavigation from '~/components/BottomNavigation.vue';
 import { useUserStore } from '~/store/user';
-
-definePageMeta({ middleware: ['auth'] })
 
 const router = useRouter()
 const userStore = useUserStore()
@@ -48,6 +46,17 @@ const productsStore = useProductsStore()
 onMounted(async () => {
     await productsStore.fetchProducts()
 })
+
+// check isAuthenticated
+onBeforeMount(async () => {
+    if (!userStore.isChecked) {
+        await userStore.checkAuth();
+    }
+
+    if (!userStore.isAuthenticated) {
+        router.push("/login");
+    }
+});
 
 const user = computed(() => userStore.user)
 // กรองเอาแค่ที่ไม่เคยกด redeemed

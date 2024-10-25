@@ -55,13 +55,12 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { computed, onBeforeMount, onMounted, onUnmounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useProductsStore } from '../store/product'
 import { useUserStore } from '../store/user'
 import dayjs from 'dayjs'
 import BottomNavigation from '~/components/BottomNavigation.vue'
-definePageMeta({ middleware: ['auth'] })
 
 const router = useRouter()
 const productsStore = useProductsStore()
@@ -69,6 +68,17 @@ const userStore = useUserStore()
 const scrollContainer = ref<HTMLElement | null>(null)
 const autoScrollInterval = ref<number | null>(null)
 const currentIndex = ref(0)
+
+// check isAuthenticated
+onBeforeMount(async () => {
+  if (!userStore.isChecked) {
+    await userStore.checkAuth();
+  }
+
+  if (!userStore.isAuthenticated) {
+    router.push("/login");
+  }
+});
 
 onMounted(async () => {
   await productsStore.fetchProducts()
