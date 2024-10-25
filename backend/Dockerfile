@@ -1,15 +1,17 @@
-FROM node:18-alpine
+FROM node:18
 
 WORKDIR /app
 
 COPY package*.json ./
 
-RUN yarn install
+# ติดตั้ง dependencies และ rebuild bcrypt
+RUN npm install
+RUN npm rebuild bcrypt --build-from-source
 
 COPY . .
 
-RUN yarn build
+RUN npm run build
 
 EXPOSE 3001
 
-CMD ["yarn", "start:prod"]
+CMD ["npm", "run", "start:prod"]
