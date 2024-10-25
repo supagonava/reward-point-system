@@ -8,7 +8,7 @@ export default defineNuxtConfig({
             extends: "./.nuxt/tsconfig.json",
         },
     },
-    plugins: ["~/plugins/vuex-plugin.ts"],
+    plugins: ["~/plugins/axios.ts", "~/plugins/pinia.ts"],
     css: ["~/assets/css/tailwind.css"],
     devtools: { enabled: true },
     postcss: {
@@ -17,5 +17,9 @@ export default defineNuxtConfig({
             autoprefixer: {},
         },
     },
-    compatibilityDate: "2024-10-24",
+    runtimeConfig: {
+        public: {
+            apiBase: "http://localhost:3001", // base URL ของ API
+        },
+    },
 });

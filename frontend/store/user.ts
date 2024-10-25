@@ -1,78 +1,59 @@
-import type { ActionContextBase, RootState } from "./types";
-import type { User, LoginPayload } from "~/types/user";
+import { defineStore } from "pinia";
+import { User } from "./types"; // ปรับเส้นทางตามจริงของ types
 import Cookies from "js-cookie";
 
-// Define the state interface for the User module
-export interface UserState {
-    user: User | null;
-    token: string | null;
-    isAuthenticated: boolean;
-}
-
-const state: UserState = {
-    user: null,
-    token: null,
-    isAuthenticated: false,
-};
-
-export const user = {
-    namespaced: true,
-    state,
-    mutations: {
-        setUser(state: UserState, user: User) {
-            state.user = user;
-            state.isAuthenticated = true;
-        },
-        setToken(state: UserState, token: string) {
-            state.token = token;
-        },
-        logout(state: UserState) {
-            state.user = null;
-            state.token = null;
-            state.isAuthenticated = false;
-            Cookies.remove("token");
-        },
-    },
+export const useUserStore = defineStore("user", {
+    state: () => ({
+        token: null as string | null,
+        user: null as User | null,
+        isAuthenticated: false,
+        isChecked: false,
+    }),
     actions: {
-        login({ commit }: ActionContextBase<UserState, RootState>, payload: LoginPayload) {
-            return new Promise((resolve, reject) => {
-                const { username, password } = payload;
-                if (username === "admin" && password === "password") {
-                    const user = { username: "admin", points: 1000 };
-                    const token = "fake-jwt-token";
+        // ทำการล็อกอิน
+        async login(username: string, password: string) {
+            this.isChecked = false;
+            const { $axios } = useNuxtApp();
+            try {
+                const response = await $axios.post("/auth/login", { username, password });
+                this.token = response.data.access_token;
+                this.user = response.data.user;
 
-                    commit("setUser", user);
-                    commit("setToken", token);
-                    Cookies.set("token", token, { expires: 1 / 3 }); // Token valid for 8 hours
-                    resolve(user);
-                } else {
-                    reject(new Error("Invalid credentials"));
-                }
-            });
+                // เก็บ token ไว้ใน Cookies
+                Cookies.set("token", this.token, { expires: 1 / 3 });
+                this.isAuthenticated = true;
+            } catch (error) {
+                console.error("Error during login:", error);
+                throw error; // ส่ง error กลับเพื่อจัดการใน component
+            }
         },
-        // ฟังก์ชันตรวจสอบ token จาก cookies
-        checkAuth({ commit }: ActionContextBase<UserState, RootState>) {
+
+        // ล็อกเอาท์
+        logout() {
+            this.token = null;
+            this.user = null;
+            this.isAuthenticated = false;
+            Cookies.remove("token");
+            navigateTo("login");
+        },
+
+        // ตรวจสอบการล็อกอิน (เช็ค token)
+        async checkAuth() {
             const token = Cookies.get("token");
             if (token) {
-                // สมมติว่าเราตรวจสอบ token ผ่านการตรวจสอบแล้ว
-                const user = { username: "admin", points: 1000 };
-                commit("setUser", user);
-                commit("setToken", token);
+                this.token = token;
+                // คุณสามารถทำการ validate token หรือดึงข้อมูลผู้ใช้เพิ่มเติมได้
+                try {
+                    const { $axios } = useNuxtApp();
+                    const response = await $axios.get("/auth/me", { headers: { Authorization: "Bearer " + token } }); // เรียก API เพื่อดึงข้อมูลผู้ใช้
+                    this.user = response.data;
+                    this.isAuthenticated = true;
+                } catch (error) {
+                    console.error("Error checking authentication:", error);
+                    this.logout(); // ถ้า token ใช้งานไม่ได้ให้ทำการ logout
+                }
             }
-        },
-        logout({ commit }: ActionContextBase<UserState, RootState>) {
-            commit("logout");
-        },
-        deductPoints({ commit, state }: ActionContextBase<UserState, RootState>, points: number) {
-            if (state.user && state.user.points >= points) {
-                const updatedUser = { ...state.user, points: state.user.points - points };
-                commit("setUser", updatedUser);
-            }
+            this.isChecked = true;
         },
     },
-    getters: {
-        getUser: (state: UserState) => state.user,
-        isAuthenticated: (state: UserState) => state.isAuthenticated,
-        getPoints: (state: UserState) => state.user?.points ?? 0,
-    },
-};
+});

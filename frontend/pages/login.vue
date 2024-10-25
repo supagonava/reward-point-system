@@ -1,5 +1,5 @@
 <template>
-    <div class="flex min-h-screen items-center justify-center p-6">
+    <div class="flex flex-col w-screen items-center justify-center">
         <div class="w-full max-w-md rounded-lg bg-white p-8 shadow-lg">
             <h2 class="mb-6 text-center text-3xl font-bold text-primary">Login</h2>
 
@@ -33,27 +33,29 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
+import { useUserStore } from '../store/user'
+import Swal from 'sweetalert2';
 
-// ใช้ middleware 'auth' เพื่อป้องกันไม่ให้ผู้ใช้ที่ล็อกอินแล้วกลับมาที่หน้า login
-definePageMeta({
-    middleware: ['auth']
-})
-
-const store = useStore()
+const userStore = useUserStore()
 const router = useRouter()
 
-const username = ref<string>('') // ชื่อผู้ใช้
-const password = ref<string>('') // รหัสผ่าน
+const username = ref<string>('user1') // ชื่อผู้ใช้
+const password = ref<string>('password') // รหัสผ่าน
 const errorMessage = ref<string>('') // เก็บข้อความแสดงข้อผิดพลาด
 
 const login = async () => {
     try {
-        await store.dispatch('user/login', { username: username.value, password: password.value })
-        router.push('/home') // ถ้าล็อกอินสำเร็จให้ไปที่หน้า home
+        await userStore.login(username.value, password.value)
+        // router.push('/home') // ถ้าล็อกอินสำเร็จให้ไปที่หน้า home
+        window.open('/home', "_self")
     } catch (error: any) {
-        errorMessage.value = error.message
+        errorMessage.value = error?.response?.data?.message ?? error.message
+        Swal.fire({ title: "Alert", text: errorMessage.value, icon: "error", })
     }
 }
+
+definePageMeta({
+    middleware: ['auth']
+})
 </script>

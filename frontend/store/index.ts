@@ -1,10 +1,7 @@
-import { createStore } from "vuex";
-import { user } from "./user";
-import { products } from "./products";
+import { createPinia } from "pinia";
+import { defineNuxtPlugin } from "#app";
 
-export const store = createStore({
-    modules: {
-        user,
-        products,
-    },
+export default defineNuxtPlugin((nuxtApp) => {
+    const pinia = createPinia();
+    nuxtApp.vueApp.use(pinia);
 });

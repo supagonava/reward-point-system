@@ -1,17 +1,16 @@
-import type { Commit, Dispatch } from "vuex";
-import type { UserState } from "./user";
-import type { ProductState } from "./products";
-
-// Root state for combining different module states
-export interface RootState {
-    user: UserState;
-    products: ProductState;
+export interface Product {
+    id: number;
+    name: string;
+    description: string;
+    pointsRequired: number;
+    isRedeemed: boolean;
+    expirationDate: string; // วันที่หมดอายุ
+    redeemedBy: number[]; // รายการ user ID ที่แลกไปแล้ว
+    image: string;
 }
 
-// Define the action context type for Vuex actions
-export interface ActionContextBase<S, R> {
-    commit: Commit;
-    dispatch: Dispatch;
-    state: S;
-    rootState: R;
+export interface User {
+    id: number;
+    username: string;
+    points: number;
 }
