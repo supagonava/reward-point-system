@@ -55,6 +55,10 @@ onBeforeMount(async () => {
     }
 });
 
+onMounted(async () => {
+    await productStore.fetchRedeemedProducts();
+});
+
 const userStore = useUserStore()
 const productStore = useProductsStore()
 

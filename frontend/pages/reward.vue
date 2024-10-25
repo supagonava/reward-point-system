@@ -45,6 +45,7 @@ const productsStore = useProductsStore()
 
 onMounted(async () => {
     await productsStore.fetchProducts()
+    await productsStore.fetchRedeemedProducts();
 })
 
 // check isAuthenticated

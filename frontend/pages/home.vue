@@ -82,6 +82,7 @@ onBeforeMount(async () => {
 
 onMounted(async () => {
   await productsStore.fetchProducts()
+  await productsStore.fetchRedeemedProducts();
   startAutoScroll()
 })
 

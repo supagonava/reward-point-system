@@ -10,6 +10,9 @@ export const useUserStore = defineStore("user", {
         isChecked: false,
     }),
     actions: {
+        updatePoint(remainingPoints: number) {
+            this.user.points = remainingPoints;
+        },
         // ทำการล็อกอิน
         async login(username: string, password: string) {
             this.isChecked = false;

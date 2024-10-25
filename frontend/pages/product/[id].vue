@@ -64,6 +64,9 @@ const confirmRedeem = () => {
 const redeem = async () => {
     try {
         const redeemedResponse = await productsStore.redeemProduct(productId)
+        if (redeemedResponse.code === 0) {
+            userStore.updatePoint(redeemedResponse.remainingPoints)
+        }
         alert(`${redeemedResponse.message}`)
         showDialog.value = false
         router.push('/home')
