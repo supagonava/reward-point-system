@@ -1,34 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { AuthStateService } from './auth-state.service';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
-  private users = [
-    {
-      id: 1,
-      username: 'user1',
-      password: '$2b$10$aJwvuDxKnlKCQDBwQwgUy.Rf3Txz87ytwG2pJNwiIvaRTNjVjRVye',
-      points: 1000,
-    },
-    {
-      id: 2,
-      username: 'user2',
-      password: '$2b$10$aJwvuDxKnlKCQDBwQwgUy.Rf3Txz87ytwG2pJNwiIvaRTNjVjRVye',
-      points: 1000,
-    },
-    {
-      id: 3,
-      username: 'user3',
-      password: '$2b$10$aJwvuDxKnlKCQDBwQwgUy.Rf3Txz87ytwG2pJNwiIvaRTNjVjRVye',
-      points: 1000,
-    },
-  ];
-
-  constructor(private readonly jwtService: JwtService) {}
+  constructor(
+    private readonly jwtService: JwtService,
+    private readonly authStateService: AuthStateService,
+  ) {}
 
   async validateUser(username: string, password: string): Promise<any> {
-    const user = this.users.find((user) => user.username === username);
+    const user = this.authStateService.getUserByUsername(username);
 
     if (user && (await bcrypt.compare(password, user.password))) {
       const { password, ...result } = user;
@@ -45,17 +28,12 @@ export class AuthService {
     };
   }
 
-  // ดึงแต้มของผู้ใช้
   getUserPoints(userId: number): number {
-    const user = this.users.find((user) => user.id === userId);
+    const user = this.authStateService.getUserById(userId);
     return user ? user.points : 0;
   }
 
-  // อัปเดตแต้มของผู้ใช้หลังจากการแลกสินค้า
   updateUserPoints(userId: number, pointsUsed: number): void {
-    const user = this.users.find((user) => user.id === userId);
-    if (user) {
-      user.points -= pointsUsed;
-    }
+    this.authStateService.updateUserPoints(userId, pointsUsed);
   }
 }

@@ -38,8 +38,8 @@ export class ProductsController {
     const userPoints = this.authService.getUserPoints(userId); // ดึงแต้มของผู้ใช้
 
     const result = this.productsService.redeemProduct(userId, id, userPoints);
-    if (result.message === 'Product redeemed successfully') {
-      this.authService.updateUserPoints(userId, result.remainingPoints); // อัปเดตแต้มผู้ใช้
+    if (result.code === this.productsService.CODE_SUCCESS) {
+      this.authService.updateUserPoints(userId, result.pointUsed);
     }
 
     return result;

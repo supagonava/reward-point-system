@@ -6,6 +6,7 @@ import { AuthController } from './auth/auth.controller';
 import { JwtStrategy } from './auth/jwt.strategy';
 import { AuthModule } from './auth/auth.module';
 import { ProductsModule } from './products/products.module';
+import { ProductsService } from './products/products.service';
 
 @Module({
   imports: [
